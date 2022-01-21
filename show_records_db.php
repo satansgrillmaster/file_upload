@@ -96,7 +96,7 @@ foreach ($result = $db->query($sql) as $row){
         echo '<td>' . $row['geburtsdatum'] . '</td>';
     }
     echo '<td>' . $row['alternativtext'] . '<br>Bild vom:<br>' . $row['regidatum'] . '</td>';
-    echo '<td><img src="bild.php?id='  . $row['id'] . '" style="width: 200px"></td>';
+    echo '<td><img src="bild.php?id='  . $row['id'] . '" style="width: 100px"></td>';
     echo '<tr>';
 }
 echo '</table>';
