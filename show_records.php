@@ -4,6 +4,7 @@
 require_once ('include/connect.php');
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+// register record
 if(isset($_POST['upload'])){
 
 
@@ -33,6 +34,8 @@ if(isset($_POST['upload'])){
         imagejpeg($new_img,'images/' . $_FILES['upload_img']['name']);
     }
 }
+
+// delete records
 if(isset($_POST['delete'])){
     $checkboxes = $_POST['record_check'];
     $delete_string = '';
@@ -46,9 +49,13 @@ if(isset($_POST['delete'])){
     $db->exec($sql);
 }
 
+$sql = 'select id, vorname, name, email, DATE_FORMAT(registrierdatum, "%D %M %Y") as regidatum,
+       DATE_FORMAT(geburtsdatum, "%d.%m.%Y") as geburtsdatum, alternativtext, bildname from personen';
+
 // send header
 header('Content-Type: text/html; charset=UTF-8');
 
+// print page
 echo <<<'head'
 <!DOCTYPE html>
 <html lang="en">
@@ -61,18 +68,16 @@ echo <<<'head'
 <div class="container">
 head;
 
-// print table
+// print form
 echo '<h1>Personen</h1>';
 echo '<form method="post" action="show_records.php" enctype="multipart/form-data">';
 echo '<div>';
 echo '<label style="align-self: flex-start"><input type="checkbox" onclick="toggle()" id="select_all">Alle auswählen</label>';
-echo '<table>';
 
+// print table
+echo '<table>';
 echo '<th>Auswählen</th><th>Vorname</th><th>Nachname</th><th>Email</th><th>Registrationsdatum</th>
 <th>Geburtsdatum</th><th>Alternativtext</th><th>Bild</th>';
-
-$sql = 'select id, vorname, name, email, DATE_FORMAT(registrierdatum, "%D %M %Y") as regidatum,
-       DATE_FORMAT(geburtsdatum, "%d.%m.%Y") as geburtsdatum, alternativtext, bildname from personen';
 
 foreach ($result = $db->query($sql) as $row){
     echo '<tr><td><input type="checkbox" name="record_check[]" value="'. $row['id'].'" class="check"></td>';
@@ -93,6 +98,7 @@ foreach ($result = $db->query($sql) as $row){
 echo '</table>';
 echo '</div>';
 
+// form to register records
 echo'<h2>Datensätze Registrieren</h2>';
 echo '<label>Vorname: <input type="text" name="firstname"></label>';
 echo '<label>Nachname: <input type="text" name="lastname"></label>';
@@ -104,6 +110,7 @@ echo '<input type="submit" value="Hochladen" name="upload">';
 echo '<input type="submit" name="delete" value="Datensätze löschen">';
 echo '</form></div></body></html>';
 ?>
+
 <script>
     // function to select or deselect all records
     function toggle() {
