@@ -22,9 +22,6 @@ if(isset($_POST['upload'])){
 
     if($prepare_state->execute()=== true){
 
-        echo $img_type;
-        echo $img_string;
-
         // resize the uploaded img to 100x70 px
         $img = imagecreatefromjpeg($_FILES['upload_img']['tmp_name']);
         $width = imagesx($img);
@@ -89,13 +86,13 @@ foreach ($result = $db->query($sql) as $row){
     echo '<td>' . $row['vorname'] . '</td>';
     echo '<td>' . $row['name'] . '</td>';
     echo '<td>' . $row['email'] . '</td>';
+    echo '<td>' . $row['regidatum'] . '</td>';
     if ($row['geburtsdatum'] == date("d.m.Y")){
         echo '<td style="color: red">' . $row['geburtsdatum'] . '</td>';
     }
     else{
         echo '<td>' . $row['geburtsdatum'] . '</td>';
     }
-    echo '<td>' . $row['regidatum'] . '</td>';
     echo '<td>' . $row['alternativtext'] . '<br>Bild vom:<br>' . $row['regidatum'] . '</td>';
     echo '<td><img src="images/' . $row['bildname'] . '"></td>';
     echo '<tr>';

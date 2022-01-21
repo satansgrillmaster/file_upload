@@ -88,13 +88,13 @@ foreach ($result = $db->query($sql) as $row){
     echo '<td>' . $row['vorname'] . '</td>';
     echo '<td>' . $row['name'] . '</td>';
     echo '<td>' . $row['email'] . '</td>';
+    echo '<td>' . $row['regidatum'] . '</td>';
     if ($row['geburtsdatum'] == date("d.m.Y")){
         echo '<td style="color: red">' . $row['geburtsdatum'] . '</td>';
     }
     else{
         echo '<td>' . $row['geburtsdatum'] . '</td>';
     }
-    echo '<td>' . $row['regidatum'] . '</td>';
     echo '<td>' . $row['alternativtext'] . '<br>Bild vom:<br>' . $row['regidatum'] . '</td>';
     echo '<td><img src="bild.php?id='  . $row['id'] . '" style="width: 200px"></td>';
     echo '<tr>';
