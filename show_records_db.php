@@ -1,42 +1,41 @@
 <?php
 
 // setup the db connection
-require_once ('include/connect.php');
+require_once ('include_db/connect.php');
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 // register record
 if(isset($_POST['upload'])){
 
 
-    $sql = "insert into personen (vorname, name, email, registrierdatum, geburtsdatum, bildname, alternativtext)
-            values (?,?,?,CURRENT_TIMESTAMP,?,?,?)";
+    $sql = "insert into personen (vorname, name, email, registrierdatum, geburtsdatum, bildname, alternativtext, bild,
+                       type, size)
+            values (?,?,?,CURRENT_TIMESTAMP,?,?,?,?,?,?)";
 
     $prepare_state = $db->prepare($sql);
     $img_name = $_FILES['upload_img']['name'];
-    $prepare_state->bindParam(1, $_POST['firstname']);
-    $prepare_state->bindParam(2,$_POST['lastname']);
-    $prepare_state->bindParam(3,$_POST['email']);
+    $firstname = htmlspecialchars($_POST['firstname']);
+    $lastname = htmlspecialchars($_POST['lastname']);
+    $email = htmlspecialchars($_POST['email']);
+    $alt_Text = htmlspecialchars($_POST['email']);
+    $file = fopen($_FILES['upload_img']['tmp_name'],'rb');
+    $size = $_FILES['upload_img']['size'];
+    $img_string = fread($file, $_FILES['upload_img']['size']);
+    $img_type = $_FILES['upload_img']['type'];
+
+
+    $prepare_state->bindParam(1, $firstname);
+    $prepare_state->bindParam(2,$lastname);
+    $prepare_state->bindParam(3,$email);
     $prepare_state->bindParam(4,$_POST['birthday']);
     $prepare_state->bindParam(5,$img_name);
-    $prepare_state->bindParam(6,$_POST['alt_text']);
+    $prepare_state->bindParam(6,$alt_Text);
+    $prepare_state->bindParam(7,$img_string);
+    $prepare_state->bindParam(8,$img_type);
+    $prepare_state->bindParam(9,$size);
 
     if($prepare_state->execute()=== true){
-
-        echo $img_type;
-        echo $img_string;
-
-        // resize the uploaded img to 100x70 px
-        $img = imagecreatefromjpeg($_FILES['upload_img']['tmp_name']);
-        $width = imagesx($img);
-        $height = imagesy($img);
-
-        $new_width = 100;
-        $new_height = 70;
-
-        $new_img = imagecreatetruecolor($new_width,$new_height);
-
-        imagecopyresampled($new_img,$img,0, 0, 0, 0, $new_width, $new_height,$width,$height);
-        imagejpeg($new_img,'images/' . $_FILES['upload_img']['name']);
+        echo "true";
     }
 }
 
@@ -75,7 +74,7 @@ head;
 
 // print form
 echo '<h1>Personen</h1>';
-echo '<form method="post" action="show_records.php" enctype="multipart/form-data">';
+echo '<form method="post" action="show_records_db.php" enctype="multipart/form-data">';
 echo '<div>';
 echo '<label style="align-self: flex-start"><input type="checkbox" onclick="toggle()" id="select_all">Alle auswählen</label>';
 
@@ -97,7 +96,7 @@ foreach ($result = $db->query($sql) as $row){
     }
     echo '<td>' . $row['regidatum'] . '</td>';
     echo '<td>' . $row['alternativtext'] . '<br>Bild vom:<br>' . $row['regidatum'] . '</td>';
-    echo '<td><img src="images/' . $row['bildname'] . '"></td>';
+    echo '<td><img src="bild.php?id='  . $row['id'] . '" style="width: 200px"></td>';
     echo '<tr>';
 }
 echo '</table>';
