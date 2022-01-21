@@ -21,6 +21,8 @@ if(isset($_POST['upload'])){
     $prepare_state->bindParam(6,$_POST['alt_text']);
 
     if($prepare_state->execute()=== true){
+
+        // resize the uploaded img to 100x70 px
         $img = imagecreatefromjpeg($_FILES['upload_img']['tmp_name']);
         $width = imagesx($img);
         $height = imagesy($img);
